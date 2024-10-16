@@ -32,7 +32,7 @@ class Container
         $this->services['PessoaRepository'] = new PessoaRepository($entityManager);
         $this->services['PessoaService'] = new PessoaService($this->services['PessoaRepository']);
 
-        // INSIRA AS DEMAIS ABAIXO
+        // CONTATO
     }
 
     /**
