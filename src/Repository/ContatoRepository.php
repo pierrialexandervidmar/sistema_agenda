@@ -48,6 +48,26 @@ class ContatoRepository
         return $this->entityManager->getRepository(Contato::class)->findAll();
     }
 
+    /**
+     * Busca um contato pelo seu ID.
+     * @param int $id
+     * @return Contato|null
+     */
+    public function buscarPorId(int $id): ?Contato
+    {
+        return $this->entityManager->getRepository(Contato::class)->find($id);
+    }
+
+    /**
+     * Deleta um contato da base de dados.
+     * @param Contato $contato O contato a ser deletado.
+     * @return void
+     */
+    public function deletar(Contato $contato): void
+    {
+        $this->entityManager->remove($contato);
+        $this->entityManager->flush();
+    }
 
     /**
      * Busca contatos de acordo com critérios específicos enviados no array de parâmetro
@@ -64,6 +84,34 @@ class ContatoRepository
         return $query->getResult();
     }
 
+
+    /**
+     * Busca todos os contatos do tipo email.
+     * @return Contato[] Um array de objetos Contato que são do tipo email.
+     */
+    public function buscarTodosEmails(): array
+    {
+        return $this->entityManager->getRepository(Contato::class)->findBy(['tipo' => true]);
+    }
+
+    /**
+     * Busca todos os contatos do tipo telefone.
+     * @return Contato[] Um array de objetos Contato que são do tipo telefone.
+     */
+    public function buscarTodosTelefones(): array
+    {
+        return $this->entityManager->getRepository(Contato::class)->findBy(['tipo' => false]);
+    }
+
+    /**
+     * Busca uma pessoa pelo seu ID.
+     * @param int $id
+     * @return Pessoa|null
+     */
+    public function buscarPessoaPorId(int $id): ?Pessoa
+    {
+        return $this->entityManager->getRepository(Pessoa::class)->find($id);
+    }
 
    /**
     * Busca todas as pessoas.

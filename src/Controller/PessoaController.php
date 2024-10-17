@@ -99,4 +99,107 @@ class PessoaController
         return new JsonResponse($resultado, Response::HTTP_OK);
     }
 
+
+    /**
+     * Obtém uma pessoa pelo ID com seus contatos.
+     *
+     * @param int $id O ID da pessoa a ser obtida.
+     * @return Response Retorna uma resposta JSON com os dados da pessoa ou um erro.
+     */
+    public function obterComContato(Request $request, int $id): Response
+    {
+        try
+        {
+            $pessoa = $this->pessoaService->obterPessoaPorIdComContatos($id);
+
+            return new JsonResponse($pessoa, Response::HTTP_OK);
+        }
+        catch (\Exception $e)
+        {
+            return new JsonResponse(['erro' => $e->getMessage()], Response::HTTP_NOT_FOUND);
+        }
+    }
+
+    /**
+     * Obtém uma pessoa pelo ID.
+     *
+     * @param int $id O ID da pessoa a ser obtida.
+     * @return Response Retorna uma resposta JSON com os dados da pessoa ou um erro.
+     */
+    public function obter(Request $request, int $id): Response
+    {
+        try
+        {
+            $pessoa = $this->pessoaService->obterPessoaPorId($id);
+
+            return new JsonResponse([
+                'id' => $pessoa->getId(),
+                'nome' => $pessoa->getNome(),
+                'cpf' => $pessoa->getCpf(),
+            ], Response::HTTP_OK);
+        }
+        catch (\Exception $e)
+        {
+            return new JsonResponse(['erro' => $e->getMessage()], Response::HTTP_NOT_FOUND);
+        }
+    }
+
+    /**
+     * Atualiza uma pessoa existente.
+     *
+     * @param Request $request A requisição HTTP contendo os dados atualizados da pessoa.
+     * @param int $id O ID da pessoa a ser atualizada.
+     * @return Response Retorna uma resposta JSON com os dados da pessoa atualizada ou um erro.
+     */
+    public function atualizar(Request $request, int $id): Response
+    {
+        $dados = json_decode($request->getContent(), true);
+
+        if (!$dados || !isset($dados['nome']) || !isset($dados['cpf']))
+        {
+            return new JsonResponse(['erro' => 'Dados inválidos'], Response::HTTP_BAD_REQUEST);
+        }
+
+        try
+        {
+            $pessoa = $this->pessoaService->atualizarPessoa($id, $dados['nome'], $dados['cpf']);
+
+            return new JsonResponse([
+                'id' => $pessoa->getId(),
+                'nome' => $pessoa->getNome(),
+                'cpf' => $pessoa->getCpf(),
+            ], Response::HTTP_OK);
+        }
+        catch (\Exception $e)
+        {
+            return new JsonResponse(['erro' => $e->getMessage()], Response::HTTP_NOT_FOUND);
+        }
+    }
+
+    /**
+     * Deleta uma pessoa pelo ID.
+     *
+     * @param int $id O ID da pessoa a ser deletada.
+     * @return Response Retorna uma resposta JSON confirmando a deleção ou um erro.
+     */
+    public function deletar(Request $request, int $id): Response
+    {
+        try
+        {
+            $this->pessoaService->deletarPessoa($id);
+            return new JsonResponse(['mensagem' => 'Pessoa deletada com sucesso'], Response::HTTP_NO_CONTENT);
+        }
+        catch (EntityNotFoundException $e)
+        {
+            return new JsonResponse(['erro' => 'Pessoa não encontrada.'], Response::HTTP_NOT_FOUND);
+        }
+        catch (\Error $e)
+        {
+            return new JsonResponse(['erro' => 'Ocorreu um erro interno no servidor.'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+        catch (\Exception $e)
+        {
+            return new JsonResponse(['erro' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+        }
+    }
 }

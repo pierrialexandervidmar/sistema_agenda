@@ -135,5 +135,68 @@ class PessoaService
         return $resultado;
     }
 
-    
+    /**
+     * Atualiza uma pessoa existente.
+     *
+     * @param int $id O ID da pessoa a ser atualizada.
+     * @param string $nome O novo nome da pessoa.
+     * @param string $cpf O novo CPF da pessoa.
+     * @return Pessoa Retorna a pessoa atualizada.
+     * @throws EntityNotFoundException Se a pessoa não for encontrada.
+     */
+    public function atualizarPessoa(int $id, string $nome, string $cpf): Pessoa
+    {
+        $pessoa = $this->obterPessoaPorId($id);
+        $pessoa->setNome($nome);
+        $pessoa->setCpf($cpf);
+
+        $this->pessoaRepository->atualizar($pessoa);
+
+        return $pessoa;
+    }
+
+    /**
+     * Deleta uma pessoa pelo ID.
+     *
+     * @param int $id O ID da pessoa a ser deletada.
+     * @throws EntityNotFoundException Se a pessoa não for encontrada.
+     */
+    public function deletarPessoa(int $id): void
+    {
+        $pessoa = $this->obterPessoaPorId($id);
+        $this->pessoaRepository->deletar($pessoa);
+    }
+
+    /**
+     * Busca uma pessoa pelo CPF.
+     *
+     * @param string $cpf O CPF da pessoa a ser buscada.
+     * @return Pessoa|null Retorna a pessoa encontrada ou null se não for encontrada.
+     */
+    public function buscarPessoaPorCpf(string $cpf): ?Pessoa
+    {
+        return $this->pessoaRepository->buscarPessoaCpf($cpf);
+    }
+
+    /**
+     * Busca pessoas pelo nome.
+     *
+     * @param string $nome O nome das pessoas a serem buscadas.
+     * @return Pessoa[] Retorna um array de pessoas com o nome correspondente.
+     */
+    public function buscarPessoasPorNome(string $nome): array
+    {
+        return $this->pessoaRepository->buscarPessoaNome($nome);
+    }
+
+    /**
+     * Busca pessoas de acordo com critérios específicos enviados no array de parâmetro.
+     *
+     * @param array $criterios Critérios de busca.
+     * @return Pessoa[] Retorna um array de pessoas que correspondem aos critérios.
+     */
+    public function buscarPorCriterio(array $criterios): array
+    {
+        return $this->pessoaRepository->buscarPorCriterio($criterios);
+    }
 }

@@ -75,7 +75,26 @@ class ContatoService
         return $this->contatoRepository->buscarTodos();
     }
 
-  
+    /**
+     * Obtém um contato pelo ID.
+     *
+     * Busca um contato específico pelo seu ID. Caso o contato não seja encontrado,
+     * uma exceção será lançada.
+     *
+     * @param int $id O ID do contato a ser obtido.
+     * @return Contato O contato obtido.
+     * @throws EntityNotFoundException Se o contato não for encontrado.
+     */
+    public function obterContatoPorId(int $id): Contato
+    {
+        $contato = $this->contatoRepository->buscarPorId($id);
+
+        if (!$contato) {
+            throw new EntityNotFoundException('Contato não encontrado.');
+        }
+
+        return $contato;
+    }
 
     /**
      * Busca todas as pessoas cadastradas.
@@ -89,5 +108,49 @@ class ContatoService
         return $this->contatoRepository->buscarPessoas();
     }
 
-  
+    /**
+     * Atualiza um contato existente.
+     *
+     * Atualiza os dados de um contato já existente, incluindo seu tipo, descrição e
+     * a pessoa associada. Se o contato ou a pessoa não forem encontrados, uma exceção será lançada.
+     *
+     * @param int $id O ID do contato a ser atualizado.
+     * @param bool $tipo O novo tipo do contato.
+     * @param string $descricao A nova descrição do contato.
+     * @param int $idPessoa O ID da pessoa associada ao contato.
+     * @return Contato O contato atualizado.
+     * @throws EntityNotFoundException Se o contato ou a pessoa não forem encontrados.
+     */
+    public function atualizarContato(int $id, bool $tipo, string $descricao, int $idPessoa): Contato
+    {
+        $contato = $this->obterContatoPorId($id);
+        $pessoa = $this->contatoRepository->buscarPessoaPorId($idPessoa);
+
+        if (!$pessoa) {
+            throw new EntityNotFoundException('Pessoa associada não encontrada.');
+        }
+
+        $contato->setTipo($tipo);
+        $contato->setDescricao($descricao);
+        $contato->setPessoa($pessoa); // Atualizar a associação com a pessoa
+
+        $this->contatoRepository->salvar($contato);
+
+        return $contato;
+    }
+
+    /**
+     * Deleta um contato pelo ID.
+     *
+     * Remove um contato do banco de dados com base em seu ID. Caso o contato não
+     * seja encontrado, uma exceção será lançada.
+     *
+     * @param int $id O ID do contato a ser deletado.
+     * @throws EntityNotFoundException Se o contato não for encontrado.
+     */
+    public function deletarContato(int $id): void
+    {
+        $contato = $this->obterContatoPorId($id);
+        $this->contatoRepository->deletar($contato);
+    }
 }
