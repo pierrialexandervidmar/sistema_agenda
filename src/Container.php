@@ -3,8 +3,10 @@
 
 namespace App;
 
+use App\Repository\ContatoRepository;
 use Doctrine\ORM\EntityManager;
 use App\Repository\PessoaRepository;
+use App\Service\ContatoService;
 use App\Service\PessoaService;
 
 /**
@@ -28,11 +30,14 @@ class Container
     {
         $this->services['EntityManager'] = $entityManager;
 
+        // CONTATO
+        $this->services['ContatoRepository'] = new ContatoRepository($entityManager);
+        $this->services['ContatoService'] = new ContatoService($this->services['ContatoRepository']);
+        
         // PESSOA
         $this->services['PessoaRepository'] = new PessoaRepository($entityManager);
-        $this->services['PessoaService'] = new PessoaService($this->services['PessoaRepository']);
+        $this->services['PessoaService'] = new PessoaService($this->services['PessoaRepository'], $this->services['ContatoRepository']);
 
-        // CONTATO
     }
 
     /**

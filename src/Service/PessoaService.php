@@ -20,6 +20,7 @@ use Doctrine\ORM\EntityNotFoundException;
 class PessoaService
 {
     private PessoaRepository $pessoaRepository;
+    private ContatoRepository $contatoRepository;
 
     /**
      * Método construtor.
@@ -27,9 +28,10 @@ class PessoaService
      * @param PessoaRepository $pessoaRepository
      * @param ContatoRepository $contatoRepository
      */
-    public function __construct(PessoaRepository $pessoaRepository)
+    public function __construct(PessoaRepository $pessoaRepository, ContatoRepository $contatoRepository)
     {
         $this->pessoaRepository = $pessoaRepository;
+        $this->contatoRepository = $contatoRepository;
     }
 
     /**
@@ -61,6 +63,38 @@ class PessoaService
     }
 
     /**
+     * Obtém uma pessoa pelo ID, incluindo seus contatos.
+     *
+     * @param int $id O ID da pessoa a ser obtida.
+     * @return array Retorna um array com os dados da pessoa e seus contatos.
+     * @throws EntityNotFoundException Se a pessoa não for encontrada.
+     */
+    public function obterPessoaPorIdComContatos(int $id): array
+    {
+        $pessoa = $this->pessoaRepository->buscarPorId($id);
+
+        if (!$pessoa) {
+            throw new EntityNotFoundException('Pessoa não encontrada.');
+        }
+
+        $contatos = $this->contatoRepository->buscarContatoPessoa(['pessoa' => $pessoa->getId()]);
+
+        $contatosMapeados = array_map(function ($contato) {
+            return [
+                'tipo' => $contato->getTipo() ? "Email" : "Telefone",
+                'descricao' => $contato->getDescricao(),
+            ];
+        }, $contatos);
+
+        return [
+            'id' => $pessoa->getId(),
+            'nome' => $pessoa->getNome(),
+            'cpf' => $pessoa->getCpf(),
+            'contatos' => $contatosMapeados,
+        ];
+    }
+
+        /**
      * Obtém uma pessoa pelo ID
      *
      * @param int $id O ID da pessoa a ser obtida.
@@ -79,46 +113,27 @@ class PessoaService
     }
 
     /**
-     * Atualiza uma pessoa existente.
+     * Lista todas as pessoas com seus contatos.
      *
-     * @param int $id O ID da pessoa a ser atualizada.
-     * @param string $nome O novo nome da pessoa.
-     * @param string $cpf O novo CPF da pessoa.
-     * @return Pessoa Retorna a pessoa atualizada.
-     * @throws EntityNotFoundException Se a pessoa não for encontrada.
+     * @return array Retorna um array de pessoas com seus respectivos contatos.
      */
-    public function atualizarPessoa(int $id, string $nome, string $cpf): Pessoa
+    public function listarPessoasComContatos(): array
     {
-        $pessoa = $this->obterPessoaPorId($id);
-        $pessoa->setNome($nome);
-        $pessoa->setCpf($cpf);
+        $pessoas = $this->pessoaRepository->buscarTodos();
+        $resultado = [];
 
-        $this->pessoaRepository->atualizar($pessoa);
+        foreach ($pessoas as $pessoa) {
+            $contatos = $this->contatoRepository->buscarContatoPessoa(['pessoa' => $pessoa->getId()]);
+            $resultado[] = [
+                'id' => $pessoa->getId(),
+                'nome' => $pessoa->getNome(),
+                'cpf' => $pessoa->getCpf(),
+                'contatos' => $contatos,
+            ];
+        }
 
-        return $pessoa;
+        return $resultado;
     }
 
-    /**
-     * Deleta uma pessoa pelo ID.
-     *
-     * @param int $id O ID da pessoa a ser deletada.
-     * @throws EntityNotFoundException Se a pessoa não for encontrada.
-     */
-    public function deletarPessoa(int $id): void
-    {
-        $pessoa = $this->obterPessoaPorId($id);
-        $this->pessoaRepository->deletar($pessoa);
-    }
-
-
-    /**
-     * Busca pessoas de acordo com critérios específicos enviados no array de parâmetro.
-     *
-     * @param array $criterios Critérios de busca.
-     * @return Pessoa[] Retorna um array de pessoas que correspondem aos critérios.
-     */
-    public function buscarPorCriterio(array $criterios): array
-    {
-        return $this->pessoaRepository->buscarPorCriterio($criterios);
-    }
+    
 }

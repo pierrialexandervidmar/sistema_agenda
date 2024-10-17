@@ -17,7 +17,7 @@ Antes de começar, verifique se você possui o Docker e o Docker Compose instala
 
 ## Como Baixar o Projeto
 
-Para baixar o projeto, utilize o comando git clone. Substitua `<URL_DO_REPOSITORIO>` pela URL do seu repositório:
+Para baixar o projeto, utilize o comando git clone
 
 ```bash
 git clone git@github.com:pierrialexandervidmar/sistema_agenda.git
