@@ -9,7 +9,6 @@ require_once "vendor/autoload.php";
 $paths = [__DIR__ . '/Entity'];
 $isDevMode = true;
 
-// Configurações do banco de dados
 $dbParams = [
     'driver'   => 'pdo_pgsql',          
     'user'     => 'root',          

@@ -47,6 +47,147 @@ class PessoaController
         $this->pessoaService = $pessoaService;
     }
 
+    public function index(Request $request)
+    {
+        $pessoas = $this->pessoaService->listarPessoas();
+
+        $resultado = [];
+
+        foreach ($pessoas as $pessoa)
+        {
+            $resultado[] = [
+                'id' => $pessoa->getId(),      // Usar métodos getter
+                'nome' => $pessoa->getNome(),
+                'cpf' => $pessoa->getCpf()
+            ];
+        }
+
+        $viewPath = __DIR__ . '/../Views/Pessoa/pessoa.php';
+
+        if (file_exists($viewPath))
+        {
+            extract(['pessoas' => $resultado]);
+            ob_start();
+            include $viewPath;
+            $content = ob_get_clean();
+        }
+        else
+        {
+            $content = "Página não encontrada.";
+        }
+
+        return new Response($content);
+    }
+
+
+    /**
+     * Método para criar uma nova pessoa a partir do formulário da view.
+     *
+     * @param Request $request A requisição HTTP.
+     * @return Response Retorna uma resposta redirecionando para a página de pessoas após a criação.
+     */
+    public function criarPessoaView(Request $request): Response
+    {
+        if ($request->isMethod('POST'))
+        {
+            $dados = $request->request->all(); // Obtém os dados do formulário
+
+            if (!isset($dados['nome']) || !isset($dados['cpf']))
+            {
+                // Em caso de dados inválidos, você pode redirecionar com uma mensagem ou retornar um erro
+                return new JsonResponse(['erro' => 'Dados inválidos'], Response::HTTP_BAD_REQUEST);
+            }
+
+            // Cria uma nova pessoa
+            $this->pessoaService->criarPessoa($dados['nome'], $dados['cpf']);
+
+            // Redireciona de volta para a lista de pessoas após a criação
+            return new Response('', Response::HTTP_NO_CONTENT);
+        }
+
+        // Se não for um método POST, redireciona para a página de pessoas
+        return new Response('Método não permitido', Response::HTTP_METHOD_NOT_ALLOWED);
+    }
+
+
+    public function excluirPessoaView(Request $request): Response
+    {
+        if ($request->isMethod('POST'))
+        {
+            $dados = $request->request->all(); // Obtém os dados do formulário
+
+            if (!isset($dados['id']))
+            {
+                return new JsonResponse(['erro' => 'Dados inválidos'], Response::HTTP_BAD_REQUEST);
+            }
+
+            $this->pessoaService->deletarPessoa($dados['id']);
+
+            return new Response('', Response::HTTP_NO_CONTENT);
+        }
+
+        // Se não for um método POST, redireciona para a página de contatos
+        return new Response('Método não permitido', Response::HTTP_METHOD_NOT_ALLOWED);
+    }
+
+
+    public function obterPessoaView(Request $request, int $id): Response
+    {
+        try
+        {
+            // Obtém o contato pelo ID
+            $pessoa = $this->pessoaService->obterPessoaPorId($id);
+
+            // Prepara os dados do contato para retornar como JSON
+            $data = [
+                'id' => $pessoa->getId(),
+                'nome' => $pessoa->getNome(),
+                'cpf' => $pessoa->getCpf()
+            ];
+
+            // Retorna os dados do contato em formato JSON
+            return new JsonResponse($data, Response::HTTP_OK);
+        }
+        catch (\Exception $e)
+        {
+            // Retorna um erro caso ocorra uma exceção
+            return new JsonResponse(['erro' => $e->getMessage()], Response::HTTP_NOT_FOUND);
+        }
+    }
+
+
+    public function editarPessoaView(Request $request): Response
+    {
+        if ($request->isMethod('POST'))
+        {
+            $dados = $request->request->all(); // Obtém os dados do formulário
+
+            // Valida se os dados necessários estão presentes
+            if (!isset($dados['id']) || !isset($dados['nome']) || !isset($dados['cpf']))
+            {
+                return new JsonResponse(['erro' => 'Dados inválidos'], Response::HTTP_BAD_REQUEST);
+            }
+
+            // Tenta atualizar o contato
+            try
+            {
+                $this->pessoaService->atualizarPessoa((int)$dados['id'], $dados['nome'], $dados['cpf']);
+                return new Response('', Response::HTTP_NO_CONTENT);
+            }
+            catch (EntityNotFoundException $e)
+            {
+                return new JsonResponse(['erro' => 'Pessoa não encontrada.'], Response::HTTP_NOT_FOUND);
+            }
+            catch (\Exception $e)
+            {
+                return new JsonResponse(['erro' => 'Erro ao atualizar a pesoa.'], Response::HTTP_INTERNAL_SERVER_ERROR);
+            }
+        }
+
+        // Se não for um método POST, redireciona para a página de contatos
+        return new Response('Método não permitido', Response::HTTP_METHOD_NOT_ALLOWED);
+    }
+
 
 
     // API ==========

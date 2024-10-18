@@ -8,10 +8,7 @@ return [
     'controller' => 'App\Controller\HomeController::index',
     'service' => null,
   ],
-
-
-  // ROTAS DE PESSOAS
-  [
+  [ // ROTAS DE PESSOAS
     'path' => '/pessoas',
     'methods' => ['GET'],
     'controller' => 'App\Controller\PessoaController::index',
@@ -41,10 +38,7 @@ return [
     'controller' => 'App\Controller\PessoaController::editarPessoaView',
     'service' => 'PessoaService',
   ],
-
-
-  // ROTAS DE CONTATO
-  [
+  [ // ROTAS DE CONTATOS
     'path' => '/contatos',
     'methods' => ['GET'],
     'controller' => 'App\Controller\ContatoController::index',
