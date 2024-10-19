@@ -1,15 +1,16 @@
 <?php
+
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * ClassE Contato
+ * Class Contato
  *
  * A classe Contato representa a entidade de contatos no sistema.
  * Ela é mapeada para a tabela `contatos` no banco de dados e contém informações
- * sobre cada contato, incluindo seu ID, tipo (email ou telefone) e descrição.
- *
+ * sobre cada contato, incluindo seu ID, tipo (email ou telefone), descrição
+ * e a pessoa associada ao contato.
  *
  * @package App\Entity
  * @author Pierri Alexander Vidmar
@@ -21,7 +22,7 @@ class Contato
 {
     #[ORM\Id]
     #[ORM\Column(type: 'integer')]
-    #[ORM\GeneratedValue(strategy:'AUTO')]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
     private $id;
 
     #[ORM\Column(type: 'boolean', nullable: false)]
@@ -37,7 +38,7 @@ class Contato
     /**
      * Obtém o ID do contato.
      *
-     * @return int|null Retorna o ID do contato ou null se não estiver definido.
+     * @return int|null
      */
     public function getId(): ?int
     {
@@ -47,7 +48,7 @@ class Contato
     /**
      * Obtém o tipo do contato.
      *
-     * @return bool Retorna true se o contato for do tipo email, ou false se for telefone.
+     * @return bool
      */
     public function getTipo(): bool
     {
@@ -57,7 +58,7 @@ class Contato
     /**
      * Define o tipo do contato.
      *
-     * @param bool $tipo O tipo do contato (true para email, false para telefone).
+     * @param bool $tipo
      */
     public function setTipo(bool $tipo): void
     {
@@ -84,12 +85,21 @@ class Contato
         $this->descricao = $descricao;
     }
 
-
+    /**
+     * Obtém a pessoa associada ao contato.
+     *
+     * @return Pessoa|null
+     */
     public function getPessoa(): ?Pessoa
     {
         return $this->pessoa;
     }
 
+    /**
+     * Define a pessoa associada ao contato.
+     *
+     * @param Pessoa|null $pessoa
+     */
     public function setPessoa(?Pessoa $pessoa): void
     {
         $this->pessoa = $pessoa;
@@ -98,7 +108,7 @@ class Contato
     /**
      * Verifica se o contato é do tipo email.
      *
-     * @return bool Retorna true se o contato for do tipo email, caso contrário false.
+     * @return bool
      */
     public function isEmail(): bool
     {
@@ -108,7 +118,7 @@ class Contato
     /**
      * Verifica se o contato é do tipo telefone.
      *
-     * @return bool Retorna true se o contato for do tipo telefone, caso contrário false.
+     * @return bool
      */
     public function isPhone(): bool
     {

@@ -1,7 +1,5 @@
 <?php
 
-// src/Controller/PessoaController.php
-
 namespace App\Controller;
 
 use App\Service\PessoaService;
@@ -17,18 +15,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
  * relacionadas às pessoas na aplicação. Ele utiliza o serviço PessoaService
  * para realizar ações como criar, listar, obter, atualizar e deletar pessoas.
  *
- * **Uso:**
- * Este controlador deve ser usado para manipular requisições HTTP relacionadas
- * às pessoas. Ele processa as entradas, chama os serviços correspondentes e
- * retorna as respostas apropriadas.
- *
- * **Exemplo:**
- * Para criar uma nova pessoa:
- * ```php
- * $pessoaController = new PessoaController($pessoaService);
- * $response = $pessoaController->criar($request);
- * ```
- *
  * @package App\Controller
  * @author Pierri Alexander Vidmar
  * @since 10/2024
@@ -40,14 +26,20 @@ class PessoaController
     /**
      * PessoaController constructor.
      *
-     * @param PessoaService $pessoaService O serviço de pessoa que será utilizado pelo controlador.
+     * @param PessoaService $pessoaService
      */
     public function __construct(PessoaService $pessoaService)
     {
         $this->pessoaService = $pessoaService;
     }
 
-    public function index(Request $request)
+    /**
+     * Lista todas as pessoas.
+     *
+     * @param Request $request 
+     * @return Response 
+     */
+    public function index(Request $request): Response
     {
         $pessoas = $this->pessoaService->listarPessoas();
 
@@ -56,9 +48,9 @@ class PessoaController
         foreach ($pessoas as $pessoa)
         {
             $resultado[] = [
-                'id' => $pessoa->getId(),      // Usar métodos getter
+                'id' => $pessoa->getId(),
                 'nome' => $pessoa->getNome(),
-                'cpf' => $pessoa->getCpf()
+                'cpf' => $this->pessoaService->formatarCPF($pessoa->getCpf())
             ];
         }
 
@@ -79,42 +71,47 @@ class PessoaController
         return new Response($content);
     }
 
-
     /**
-     * Método para criar uma nova pessoa a partir do formulário da view.
+     * Cria uma nova pessoa a partir do formulário da view.
      *
-     * @param Request $request A requisição HTTP.
-     * @return Response Retorna uma resposta redirecionando para a página de pessoas após a criação.
+     * @param Request $request
+     * @return Response 
      */
     public function criarPessoaView(Request $request): Response
     {
         if ($request->isMethod('POST'))
         {
-            $dados = $request->request->all(); // Obtém os dados do formulário
+            $dados = $request->request->all();
 
             if (!isset($dados['nome']) || !isset($dados['cpf']))
             {
-                // Em caso de dados inválidos, você pode redirecionar com uma mensagem ou retornar um erro
                 return new JsonResponse(['erro' => 'Dados inválidos'], Response::HTTP_BAD_REQUEST);
             }
 
-            // Cria uma nova pessoa
+            if (!$this->pessoaService->validarCPF($dados['cpf']))
+            {
+                return new JsonResponse(['erro' => 'CPF INVÁLIDO'], Response::HTTP_BAD_REQUEST);
+            }
+
             $this->pessoaService->criarPessoa($dados['nome'], $dados['cpf']);
 
-            // Redireciona de volta para a lista de pessoas após a criação
             return new Response('', Response::HTTP_NO_CONTENT);
         }
 
-        // Se não for um método POST, redireciona para a página de pessoas
         return new Response('Método não permitido', Response::HTTP_METHOD_NOT_ALLOWED);
     }
 
-
+    /**
+     * Exclui uma pessoa a partir do ID fornecido.
+     *
+     * @param Request $request
+     * @return Response
+     */
     public function excluirPessoaView(Request $request): Response
     {
         if ($request->isMethod('POST'))
         {
-            $dados = $request->request->all(); // Obtém os dados do formulário
+            $dados = $request->request->all();
 
             if (!isset($dados['id']))
             {
@@ -126,49 +123,56 @@ class PessoaController
             return new Response('', Response::HTTP_NO_CONTENT);
         }
 
-        // Se não for um método POST, redireciona para a página de contatos
         return new Response('Método não permitido', Response::HTTP_METHOD_NOT_ALLOWED);
     }
 
-
+    /**
+     * Obtém uma pessoa pelo ID.
+     *
+     * @param Request $request 
+     * @param int $id 
+     * @return Response 
+     */
     public function obterPessoaView(Request $request, int $id): Response
     {
         try
         {
-            // Obtém o contato pelo ID
             $pessoa = $this->pessoaService->obterPessoaPorId($id);
 
-            // Prepara os dados do contato para retornar como JSON
-            $data = [
+            return new JsonResponse([
                 'id' => $pessoa->getId(),
                 'nome' => $pessoa->getNome(),
-                'cpf' => $pessoa->getCpf()
-            ];
-
-            // Retorna os dados do contato em formato JSON
-            return new JsonResponse($data, Response::HTTP_OK);
+                'cpf' => $this->pessoaService->formatarCPF($pessoa->getCpf())
+            ], Response::HTTP_OK);
         }
         catch (\Exception $e)
         {
-            // Retorna um erro caso ocorra uma exceção
             return new JsonResponse(['erro' => $e->getMessage()], Response::HTTP_NOT_FOUND);
         }
     }
 
-
+    /**
+     * Atualiza uma pessoa existente.
+     *
+     * @param Request $request 
+     * @return Response 
+     */
     public function editarPessoaView(Request $request): Response
     {
         if ($request->isMethod('POST'))
         {
-            $dados = $request->request->all(); // Obtém os dados do formulário
+            $dados = $request->request->all();
 
-            // Valida se os dados necessários estão presentes
             if (!isset($dados['id']) || !isset($dados['nome']) || !isset($dados['cpf']))
             {
                 return new JsonResponse(['erro' => 'Dados inválidos'], Response::HTTP_BAD_REQUEST);
             }
 
-            // Tenta atualizar o contato
+            if (!$this->pessoaService->validarCPF($dados['cpf']))
+            {
+                return new JsonResponse(['erro' => 'CPF INVÁLIDO'], Response::HTTP_BAD_REQUEST);
+            }
+
             try
             {
                 $this->pessoaService->atualizarPessoa((int)$dados['id'], $dados['nome'], $dados['cpf']);
@@ -180,23 +184,20 @@ class PessoaController
             }
             catch (\Exception $e)
             {
-                return new JsonResponse(['erro' => 'Erro ao atualizar a pesoa.'], Response::HTTP_INTERNAL_SERVER_ERROR);
+                return new JsonResponse(['erro' => 'Erro ao atualizar a pessoa.'], Response::HTTP_INTERNAL_SERVER_ERROR);
             }
         }
 
-        // Se não for um método POST, redireciona para a página de contatos
         return new Response('Método não permitido', Response::HTTP_METHOD_NOT_ALLOWED);
     }
-
-
 
     // API ==========
 
     /**
      * Cria uma nova pessoa.
      *
-     * @param Request $request A requisição HTTP contendo os dados da pessoa.
-     * @return Response Retorna uma resposta JSON com os dados da pessoa criada ou um erro.
+     * @param Request $request 
+     * @return Response 
      */
     public function criar(Request $request): Response
     {
@@ -204,7 +205,12 @@ class PessoaController
 
         if (!$dados || !isset($dados['nome']) || !isset($dados['cpf']))
         {
-            return new JsonResponse(['erro' => 'Dados inválidos'], Response::HTTP_BAD_REQUEST);
+            return new JsonResponse(['erro' => 'Dados inválidos, verifique se todos os dados estão corretos e enviados'], Response::HTTP_BAD_REQUEST);
+        }
+
+        if (!$this->pessoaService->validarCPF($dados['cpf']))
+        {
+            return new JsonResponse(['erro' => 'CPF INVÁLIDO'], Response::HTTP_BAD_REQUEST);
         }
 
         $pessoa = $this->pessoaService->criarPessoa($dados['nome'], $dados['cpf']);
@@ -215,6 +221,12 @@ class PessoaController
             'cpf' => $pessoa->getCpf(),
         ], Response::HTTP_CREATED);
     }
+
+    /**
+     * Lista todas as pessoas com seus contatos.
+     *
+     * @return Response Retorna uma resposta JSON com a lista de pessoas e seus contatos.
+     */
     public function listar(): Response
     {
         $pessoasComContatos = $this->pessoaService->listarPessoasComContatos();
@@ -240,107 +252,24 @@ class PessoaController
         return new JsonResponse($resultado, Response::HTTP_OK);
     }
 
-
     /**
      * Obtém uma pessoa pelo ID com seus contatos.
      *
-     * @param int $id O ID da pessoa a ser obtida.
-     * @return Response Retorna uma resposta JSON com os dados da pessoa ou um erro.
-     */
-    public function obterComContato(Request $request, int $id): Response
-    {
-        try
-        {
-            $pessoa = $this->pessoaService->obterPessoaPorIdComContatos($id);
-
-            return new JsonResponse($pessoa, Response::HTTP_OK);
-        }
-        catch (\Exception $e)
-        {
-            return new JsonResponse(['erro' => $e->getMessage()], Response::HTTP_NOT_FOUND);
-        }
-    }
-
-    /**
-     * Obtém uma pessoa pelo ID.
-     *
-     * @param int $id O ID da pessoa a ser obtida.
-     * @return Response Retorna uma resposta JSON com os dados da pessoa ou um erro.
+     * @param Request $request 
+     * @param int $id 
+     * @return Response 
      */
     public function obter(Request $request, int $id): Response
     {
         try
         {
-            $pessoa = $this->pessoaService->obterPessoaPorId($id);
+            $pessoaComContatos = $this->pessoaService->obterPessoaComContatosPorId($id);
 
-            return new JsonResponse([
-                'id' => $pessoa->getId(),
-                'nome' => $pessoa->getNome(),
-                'cpf' => $pessoa->getCpf(),
-            ], Response::HTTP_OK);
+            return new JsonResponse($pessoaComContatos, Response::HTTP_OK);
         }
         catch (\Exception $e)
         {
             return new JsonResponse(['erro' => $e->getMessage()], Response::HTTP_NOT_FOUND);
-        }
-    }
-
-    /**
-     * Atualiza uma pessoa existente.
-     *
-     * @param Request $request A requisição HTTP contendo os dados atualizados da pessoa.
-     * @param int $id O ID da pessoa a ser atualizada.
-     * @return Response Retorna uma resposta JSON com os dados da pessoa atualizada ou um erro.
-     */
-    public function atualizar(Request $request, int $id): Response
-    {
-        $dados = json_decode($request->getContent(), true);
-
-        if (!$dados || !isset($dados['nome']) || !isset($dados['cpf']))
-        {
-            return new JsonResponse(['erro' => 'Dados inválidos'], Response::HTTP_BAD_REQUEST);
-        }
-
-        try
-        {
-            $pessoa = $this->pessoaService->atualizarPessoa($id, $dados['nome'], $dados['cpf']);
-
-            return new JsonResponse([
-                'id' => $pessoa->getId(),
-                'nome' => $pessoa->getNome(),
-                'cpf' => $pessoa->getCpf(),
-            ], Response::HTTP_OK);
-        }
-        catch (\Exception $e)
-        {
-            return new JsonResponse(['erro' => $e->getMessage()], Response::HTTP_NOT_FOUND);
-        }
-    }
-
-    /**
-     * Deleta uma pessoa pelo ID.
-     *
-     * @param int $id O ID da pessoa a ser deletada.
-     * @return Response Retorna uma resposta JSON confirmando a deleção ou um erro.
-     */
-    public function deletar(Request $request, int $id): Response
-    {
-        try
-        {
-            $this->pessoaService->deletarPessoa($id);
-            return new JsonResponse(['mensagem' => 'Pessoa deletada com sucesso'], Response::HTTP_NO_CONTENT);
-        }
-        catch (EntityNotFoundException $e)
-        {
-            return new JsonResponse(['erro' => 'Pessoa não encontrada.'], Response::HTTP_NOT_FOUND);
-        }
-        catch (\Error $e)
-        {
-            return new JsonResponse(['erro' => 'Ocorreu um erro interno no servidor.'], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
-        catch (\Exception $e)
-        {
-            return new JsonResponse(['erro' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
     }
 }

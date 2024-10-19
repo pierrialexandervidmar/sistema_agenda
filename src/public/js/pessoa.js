@@ -36,8 +36,13 @@ function enviarFormularioPessoa(e) {
       $('#nome').val('');
       $('#cpf').val('');
     },
-    error: function () {
-      alert('Erro ao cadastrar pessoa. Verifique os dados.');
+    error: function (response) {
+      if (response.responseJSON.erro) {
+        alert('Erro ao editar a pessoa. Verifique os dados. ' + response.responseJSON.erro);
+      }
+      else {
+        alert('Erro ao adicionar a pessoa. Verifique os dados.');
+      }
     }
   });
 }
@@ -125,7 +130,7 @@ function enviarModalEdicao(e) {
           $('#modal').modal('hide'); // Corrigido para esconder o modal
       },
       error: function (response) {
-          alert('Erro ao editar a pessoa. Verifique os dados.');
+          alert('Erro ao editar a pessoa. Verifique os dados. ' + response.responseJSON.erro);
       }
   }); // Corrigido para fechar a chamada da função
 }

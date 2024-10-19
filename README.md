@@ -1,12 +1,19 @@
 # Projeto Agenda de Contatos (PHP + Doctrine)
 
-Este é um projeto composto por uma API e views para gerenciamento de uma agenda de contatos, desenvolvido com PHP, Doctrine e Docker. 
-A aplicação permite operações CRUD (Create, Read, Update, Delete) para gerenciar contatos, utilizando o banco de dados Postgres.
+Este projeto consiste em uma API e views para o gerenciamento de uma agenda de contatos, desenvolvido com PHP, Doctrine e Docker. A aplicação permite realizar operações CRUD (Create, Read, Update, Delete) para gerenciar contatos, utilizando um banco de dados PostgreSQL.
+
+A estrutura da aplicação é baseada em uma arquitetura em camadas (Layered Architecture), composta por Controller, Service, Entity e Repository. Embora seja uma aplicação pequena, o objetivo é demonstrar uma forma eficaz de separação de responsabilidades, facilitando a manutenção futura e tornando-a escalável.
+
+Outro aspecto importante é o arquivo Container.php, que gerencia as injeções de dependência, simplificando a manutenção e a organização do código.
+
+A aplicação inclui uma estrutura de views e rotas de APIs. Os recursos da API abrangem todas as operações CRUD e oferecem múltiplas maneiras de consumir dados (GET). O sistema de roteamento é isolado para views e APIs, o que facilita a manutenção e a inclusão de novos recursos no futuro, utilizando os arquivos routesAPI.php e routesWeb.php.
+
 
 ## Tecnologias Utilizadas
 
 - PHP
 - Doctrine ORM
+- Http-foundation
 - Docker
 - PostgreSQL
 - PgAdmin

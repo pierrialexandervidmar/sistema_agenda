@@ -39,11 +39,11 @@ class ContatoService
      * Este método cria um novo contato no sistema, associando-o a uma pessoa existente.
      * Caso a pessoa associada não seja encontrada, uma exceção será lançada.
      *
-     * @param bool $tipo Tipo do contato (por exemplo, email ou telefone).
-     * @param string $descricao Descrição do contato.
-     * @param int $idPessoa O ID da pessoa associada ao contato.
-     * @return Contato O contato criado.
-     * @throws EntityNotFoundException Se a pessoa associada não for encontrada.
+     * @param bool $tipo 
+     * @param string $descricao
+     * @param int $idPessoa 
+     * @return Contato 
+     * @throws EntityNotFoundException 
      */
     public function criarContato(bool $tipo, string $descricao, int $idPessoa): Contato
     {
@@ -68,7 +68,7 @@ class ContatoService
      *
      * Recupera todos os contatos armazenados no banco de dados.
      *
-     * @return Contato[] Lista de contatos.
+     * @return Contato[] 
      */
     public function listarContatos(): array
     {
@@ -81,9 +81,9 @@ class ContatoService
      * Busca um contato específico pelo seu ID. Caso o contato não seja encontrado,
      * uma exceção será lançada.
      *
-     * @param int $id O ID do contato a ser obtido.
-     * @return Contato O contato obtido.
-     * @throws EntityNotFoundException Se o contato não for encontrado.
+     * @param int $id 
+     * @return Contato 
+     * @throws EntityNotFoundException 
      */
     public function obterContatoPorId(int $id): Contato
     {
@@ -101,7 +101,7 @@ class ContatoService
      *
      * Este método busca todas as pessoas registradas no sistema para que possam ser associadas a um contato.
      *
-     * @return Pessoa[] Lista de pessoas cadastradas.
+     * @return Pessoa[] 
      */
     public function buscarPessoas(): array|Pessoa|null     
     {
@@ -114,12 +114,12 @@ class ContatoService
      * Atualiza os dados de um contato já existente, incluindo seu tipo, descrição e
      * a pessoa associada. Se o contato ou a pessoa não forem encontrados, uma exceção será lançada.
      *
-     * @param int $id O ID do contato a ser atualizado.
-     * @param bool $tipo O novo tipo do contato.
-     * @param string $descricao A nova descrição do contato.
-     * @param int $idPessoa O ID da pessoa associada ao contato.
-     * @return Contato O contato atualizado.
-     * @throws EntityNotFoundException Se o contato ou a pessoa não forem encontrados.
+     * @param int $id
+     * @param bool $tipo 
+     * @param string $descricao 
+     * @param int $idPessoa
+     * @return Contato 
+     * @throws EntityNotFoundException 
      */
     public function atualizarContato(int $id, bool $tipo, string $descricao, int $idPessoa): Contato
     {
@@ -145,8 +145,8 @@ class ContatoService
      * Remove um contato do banco de dados com base em seu ID. Caso o contato não
      * seja encontrado, uma exceção será lançada.
      *
-     * @param int $id O ID do contato a ser deletado.
-     * @throws EntityNotFoundException Se o contato não for encontrado.
+     * @param int $id 
+     * @throws EntityNotFoundException 
      */
     public function deletarContato(int $id): void
     {

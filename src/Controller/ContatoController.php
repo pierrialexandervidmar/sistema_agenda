@@ -1,7 +1,5 @@
 <?php
 
-// src/Controller/ContatoController.php
-
 namespace App\Controller;
 
 use App\Service\ContatoService;
@@ -17,18 +15,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
  * relacionadas aos contatos na aplicação. Ele utiliza o serviço ContatoService
  * para realizar ações como criar, listar, obter, atualizar e deletar contatos.
  *
- * **Uso:**
- * Este controlador deve ser usado para manipular requisições HTTP relacionadas
- * aos contatos. Ele processa as entradas, chama os serviços correspondentes e
- * retorna as respostas apropriadas.
- *
- * **Exemplo:**
- * Para criar um novo contato:
- * ```php
- * $contatoController = new ContatoController($contatoService);
- * $response = $contatoController->criar($request);
- * ```
- *
  * @package App\Controller
  * @author Pierri Alexander Vidmar
  * @since 10/2024
@@ -40,7 +26,7 @@ class ContatoController
     /**
      * ContatoController constructor.
      *
-     * @param ContatoService $contatoService O serviço de contato que será utilizado pelo controlador.
+     * @param ContatoService $contatoService
      */
     public function __construct(ContatoService $contatoService)
     {
@@ -50,8 +36,8 @@ class ContatoController
     /**
      * Renderiza a visão de contatos.
      *
-     * @param Request $request A requisição HTTP.
-     * @return Response Retorna uma resposta com a visão de contatos.
+     * @param Request $request 
+     * @return Response 
      */
     public function index(Request $request): Response
     {
@@ -78,10 +64,9 @@ class ContatoController
 
         if (file_exists($viewPath))
         {
-            // Extraindo a variável $resultado para a view
             extract(['contatos' => $resultado, 'pessoas' => $pessoas]);
             ob_start();
-            include $viewPath; // Passa a lista de contatos para a view
+            include $viewPath;
             $content = ob_get_clean();
         }
         else
@@ -92,15 +77,20 @@ class ContatoController
         return new Response($content);
     }
 
+    /**
+     * Obtém a visão de um contato específico pelo ID.
+     *
+     * @param Request $request 
+     * @param int $id 
+     * @return Response 
+     */
     public function obterContatoView(Request $request, int $id): Response
     {
         try
         {
-            // Obtém o contato pelo ID
             $contato = $this->contatoService->obterContatoPorId($id);
             $pessoa = $contato->getPessoa();
 
-            // Prepara os dados do contato para retornar como JSON
             $data = [
                 'id' => $contato->getId(),
                 'tipo' => $contato->getTipo() ? 'Email' : 'Telefone',
@@ -112,29 +102,25 @@ class ContatoController
                 ],
             ];
 
-            // Retorna os dados do contato em formato JSON
             return new JsonResponse($data, Response::HTTP_OK);
         }
         catch (\Exception $e)
         {
-            // Retorna um erro caso ocorra uma exceção
             return new JsonResponse(['erro' => $e->getMessage()], Response::HTTP_NOT_FOUND);
         }
     }
 
-
-
     /**
-     * Método para criar um novo contato a partir do formulário da view.
+     * Cria um novo contato a partir do formulário da view.
      *
-     * @param Request $request A requisição HTTP.
-     * @return Response Retorna uma resposta redirecionando para a página de contatos após a criação.
+     * @param Request $request 
+     * @return Response
      */
     public function criarContatoView(Request $request): Response
     {
         if ($request->isMethod('POST'))
         {
-            $dados = $request->request->all(); // Obtém os dados do formulário
+            $dados = $request->request->all();
 
             if (!isset($dados['descricao']) || !isset($dados['tipo']) || !isset($dados['idPessoa']))
             {
@@ -146,21 +132,20 @@ class ContatoController
             return new Response('', Response::HTTP_NO_CONTENT);
         }
 
-        // Se não for um método POST, redireciona para a página de contatos
         return new Response('Método não permitido', Response::HTTP_METHOD_NOT_ALLOWED);
     }
 
     /**
-     * Método para criar um novo contato a partir do formulário da view.
+     * Exclui um contato a partir do formulário da view.
      *
-     * @param Request $request A requisição HTTP.
-     * @return Response Retorna uma resposta redirecionando para a página de contatos após a criação.
+     * @param Request $request 
+     * @return Response 
      */
     public function excluirContatoView(Request $request): Response
     {
         if ($request->isMethod('POST'))
         {
-            $dados = $request->request->all(); // Obtém os dados do formulário
+            $dados = $request->request->all();
 
             if (!isset($dados['id']))
             {
@@ -172,23 +157,26 @@ class ContatoController
             return new Response('', Response::HTTP_NO_CONTENT);
         }
 
-        // Se não for um método POST, redireciona para a página de contatos
         return new Response('Método não permitido', Response::HTTP_METHOD_NOT_ALLOWED);
     }
 
+    /**
+     * Edita um contato a partir do formulário da view.
+     *
+     * @param Request $request 
+     * @return Response 
+     */
     public function editarContatoView(Request $request): Response
     {
         if ($request->isMethod('POST'))
         {
-            $dados = $request->request->all(); // Obtém os dados do formulário
+            $dados = $request->request->all();
 
-            // Valida se os dados necessários estão presentes
             if (!isset($dados['id']) || !isset($dados['descricao']) || !isset($dados['tipo']) || !isset($dados['idPessoa']))
             {
                 return new JsonResponse(['erro' => 'Dados inválidos'], Response::HTTP_BAD_REQUEST);
             }
 
-            // Tenta atualizar o contato
             try
             {
                 $this->contatoService->atualizarContato((int)$dados['id'], (bool)$dados['tipo'], $dados['descricao'], (int)$dados['idPessoa']);
@@ -204,18 +192,16 @@ class ContatoController
             }
         }
 
-        // Se não for um método POST, redireciona para a página de contatos
         return new Response('Método não permitido', Response::HTTP_METHOD_NOT_ALLOWED);
     }
-
 
     // API ==========
 
     /**
      * Cria um novo contato.
      *
-     * @param Request $request A requisição HTTP contendo os dados do contato.
-     * @return Response Retorna uma resposta JSON com os dados do contato criado ou um erro.
+     * @param Request $request 
+     * @return Response 
      */
     public function criar(Request $request): Response
     {
@@ -226,21 +212,20 @@ class ContatoController
             return new JsonResponse(['erro' => 'Dados inválidos'], Response::HTTP_BAD_REQUEST);
         }
 
-        // Cria um novo contato, passando o ID da pessoa
         $contato = $this->contatoService->criarContato((bool)$dados['tipo'], $dados['descricao'], $dados['idPessoa']);
 
         return new JsonResponse([
             'id' => $contato->getId(),
             'tipo' => $contato->getTipo() ? 'Email' : 'Telefone',
             'descricao' => $contato->getDescricao(),
-            'idPessoa' => $contato->getPessoa()->getId(), // Adicionando o ID da pessoa associada
+            'idPessoa' => $contato->getPessoa()->getId(),
         ], Response::HTTP_CREATED);
     }
 
     /**
      * Lista todos os contatos.
      *
-     * @return Response Retorna uma resposta JSON com a lista de contatos.
+     * @return Response 
      */
     public function listar(): Response
     {
@@ -253,17 +238,17 @@ class ContatoController
                 'id' => $contato->getId(),
                 'tipo' => $contato->getTipo() ? 'Email' : 'Telefone',
                 'descricao' => $contato->getDescricao(),
-                'idPessoa' => $contato->getPessoa()->getId(), // ID da pessoa associada
+                'idPessoa' => $contato->getPessoa()->getId(),
             ];
         }
 
-        return new JsonResponse($resultado, Response::HTTP_OK);
+        return new JsonResponse($resultado);
     }
 
     /**
      * Lista todos os contatos.
      *
-     * @return Response Retorna uma resposta JSON com a lista de contatos.
+     * @return Response 
      */
     public function listarComPessoa(): Response
     {
@@ -288,23 +273,26 @@ class ContatoController
     }
 
     /**
-     * Obtém um contato pelo ID.
+     * Obtém um contato específico pelo ID.
      *
-     * @param int $id O ID do contato a ser obtido.
-     * @return Response Retorna uma resposta JSON com os dados do contato ou um erro.
+     * @param int $id 
+     * @return Response
      */
-    public function obter(Request $request, int $id): Response
+    public function obter(int $id): Response
     {
         try
         {
             $contato = $this->contatoService->obterContatoPorId($id);
+            $pessoa = $contato->getPessoa();
 
-            return new JsonResponse([
+            $data = [
                 'id' => $contato->getId(),
                 'tipo' => $contato->getTipo() ? 'Email' : 'Telefone',
                 'descricao' => $contato->getDescricao(),
-                'idPessoa' => $contato->getPessoa()->getId(), // ID da pessoa associada
-            ], Response::HTTP_OK);
+                'idPessoa' => $pessoa->getId(),
+            ];
+
+            return new JsonResponse($data, Response::HTTP_OK);
         }
         catch (\Exception $e)
         {
@@ -315,8 +303,8 @@ class ContatoController
     /**
      * Obtém um contato pelo ID.
      *
-     * @param int $id O ID do contato a ser obtido.
-     * @return Response Retorna uma resposta JSON com os dados do contato ou um erro.
+     * @param int $id 
+     * @return Response 
      */
     public function obterComPessoa(Request $request, int $id): Response
     {
@@ -342,13 +330,12 @@ class ContatoController
         }
     }
 
-
     /**
      * Atualiza um contato existente.
      *
-     * @param Request $request A requisição HTTP contendo os dados atualizados do contato.
-     * @param int $id O ID do contato a ser atualizado.
-     * @return Response Retorna uma resposta JSON com os dados do contato atualizado ou um erro.
+     * @param Request $request 
+     * @param int $id 
+     * @return Response 
      */
     public function atualizar(Request $request, int $id): Response
     {
@@ -361,37 +348,35 @@ class ContatoController
 
         try
         {
-            $contato = $this->contatoService->atualizarContato($id, $dados['tipo'], $dados['descricao'], $dados['idPessoa']);
-
-            return new JsonResponse([
-                'id' => $contato->getId(),
-                'tipo' => $contato->getTipo() ? 'Email' : 'Telefone',
-                'descricao' => $contato->getDescricao(),
-                'idPessoa' => $contato->getPessoa()->getId(), // ID da pessoa associada
-            ], Response::HTTP_OK);
+            $this->contatoService->atualizarContato($id, (bool)$dados['tipo'], $dados['descricao'], (int)$dados['idPessoa']);
+            return new JsonResponse(['id' => $id], Response::HTTP_OK);
+        }
+        catch (EntityNotFoundException $e)
+        {
+            return new JsonResponse(['erro' => 'Contato ou pessoa associada não encontrado.'], Response::HTTP_NOT_FOUND);
         }
         catch (\Exception $e)
         {
-            return new JsonResponse(['erro' => $e->getMessage()], Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['erro' => 'Erro ao atualizar o contato.'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
     /**
-     * Deleta um contato pelo ID.
+     * Deleta um contato existente.
      *
-     * @param int $id O ID do contato a ser deletado.
-     * @return Response Retorna uma resposta JSON confirmando a deleção ou um erro.
+     * @param int $id 
+     * @return Response 
      */
-    public function deletar(Request $request, int $id): Response
+    public function deletar(int $id): Response
     {
         try
         {
             $this->contatoService->deletarContato($id);
-            return new JsonResponse(['mensagem' => 'Contato deletado com sucesso'], Response::HTTP_NO_CONTENT);
+            return new JsonResponse(null, Response::HTTP_NO_CONTENT);
         }
         catch (\Exception $e)
         {
-            return new JsonResponse(['erro' => $e->getMessage()], Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['erro' => 'Erro ao deletar o contato.'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 }

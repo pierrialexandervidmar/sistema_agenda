@@ -21,7 +21,7 @@ class ContatoRepository
 
     /**
      * ContatoRepository constructor.
-     * @param EntityManagerInterface $entityManager O EntityManager responsável por gerenciar as operações de persistência.
+     * @param EntityManagerInterface $entityManager
      */
     public function __construct(EntityManagerInterface $entityManager)
     {
@@ -60,7 +60,7 @@ class ContatoRepository
 
     /**
      * Deleta um contato da base de dados.
-     * @param Contato $contato O contato a ser deletado.
+     * @param Contato $contato
      * @return void
      */
     public function deletar(Contato $contato): void
@@ -73,7 +73,7 @@ class ContatoRepository
      * Busca contatos de acordo com critérios específicos enviados no array de parâmetro
      * @param array $criterios 
      * @return Contato[]
-     */ 
+     */
     public function buscarContatoPessoa(array $criterios)
     {
         $query = $this->entityManager->createQuery(
@@ -87,7 +87,7 @@ class ContatoRepository
 
     /**
      * Busca todos os contatos do tipo email.
-     * @return Contato[] Um array de objetos Contato que são do tipo email.
+     * @return Contato[]
      */
     public function buscarTodosEmails(): array
     {
@@ -96,7 +96,7 @@ class ContatoRepository
 
     /**
      * Busca todos os contatos do tipo telefone.
-     * @return Contato[] Um array de objetos Contato que são do tipo telefone.
+     * @return Contato[]
      */
     public function buscarTodosTelefones(): array
     {
@@ -113,13 +113,13 @@ class ContatoRepository
         return $this->entityManager->getRepository(Pessoa::class)->find($id);
     }
 
-   /**
-    * Busca todas as pessoas.
-    * @param int $id
-    * @return Pessoa|null
-    */
-   public function buscarPessoas(): array
-   {
-       return $this->entityManager->getRepository(Pessoa::class)->findAll();
-   }
+    /**
+     * Busca todas as pessoas.
+     * @param int $id
+     * @return Pessoa|null
+     */
+    public function buscarPessoas(): array
+    {
+        return $this->entityManager->getRepository(Pessoa::class)->findAll();
+    }
 }

@@ -14,10 +14,9 @@ use Doctrine\ORM\EntityNotFoundException;
  * Interage com o PessoaRepository e ContatoRepository para operações CRUD e manipulação de contatos.
  *
  * @package App\Service
- * @author
+ * @author Pierri Alexander Vidmar
  * @since 10/2024
- */
-class PessoaService
+ */class PessoaService
 {
     private PessoaRepository $pessoaRepository;
     private ContatoRepository $contatoRepository;
@@ -25,7 +24,7 @@ class PessoaService
     /**
      * Método construtor.
      *
-     * @param PessoaRepository $pessoaRepository
+     * @param PessoaRepository $pessoaRepository 
      * @param ContatoRepository $contatoRepository
      */
     public function __construct(PessoaRepository $pessoaRepository, ContatoRepository $contatoRepository)
@@ -37,9 +36,9 @@ class PessoaService
     /**
      * Cria uma nova pessoa.
      *
-     * @param string $nome O nome da pessoa.
-     * @param string $cpf O CPF da pessoa.
-     * @return Pessoa Retorna a instância da pessoa criada.
+     * @param string $nome 
+     * @param string $cpf 
+     * @return Pessoa
      */
     public function criarPessoa(string $nome, string $cpf): Pessoa
     {
@@ -55,7 +54,7 @@ class PessoaService
     /**
      * Lista todas as pessoas.
      *
-     * @return Pessoa[] Retorna um array com todas as pessoas cadastradas.
+     * @return Pessoa[]
      */
     public function listarPessoas(): array
     {
@@ -65,11 +64,11 @@ class PessoaService
     /**
      * Obtém uma pessoa pelo ID, incluindo seus contatos.
      *
-     * @param int $id O ID da pessoa a ser obtida.
-     * @return array Retorna um array com os dados da pessoa e seus contatos.
-     * @throws EntityNotFoundException Se a pessoa não for encontrada.
+     * @param int $id 
+     * @return array 
+     * @throws EntityNotFoundException
      */
-    public function obterPessoaPorIdComContatos(int $id): array
+    public function obterPessoaComContatosPorId(int $id): array
     {
         $pessoa = $this->pessoaRepository->buscarPorId($id);
 
@@ -94,12 +93,12 @@ class PessoaService
         ];
     }
 
-        /**
-     * Obtém uma pessoa pelo ID
+    /**
+     * Obtém uma pessoa pelo ID.
      *
-     * @param int $id O ID da pessoa a ser obtida.
-     * @return Pessoa
-     * @throws EntityNotFoundException Se a pessoa não for encontrada.
+     * @param int $id 
+     * @return Pessoa 
+     * @throws EntityNotFoundException 
      */
     public function obterPessoaPorId(int $id): Pessoa
     {
@@ -115,7 +114,7 @@ class PessoaService
     /**
      * Lista todas as pessoas com seus contatos.
      *
-     * @return array Retorna um array de pessoas com seus respectivos contatos.
+     * @return array
      */
     public function listarPessoasComContatos(): array
     {
@@ -138,11 +137,11 @@ class PessoaService
     /**
      * Atualiza uma pessoa existente.
      *
-     * @param int $id O ID da pessoa a ser atualizada.
-     * @param string $nome O novo nome da pessoa.
-     * @param string $cpf O novo CPF da pessoa.
-     * @return Pessoa Retorna a pessoa atualizada.
-     * @throws EntityNotFoundException Se a pessoa não for encontrada.
+     * @param int $id
+     * @param string $nome
+     * @param string $cpf 
+     * @return Pessoa
+     * @throws EntityNotFoundException 
      */
     public function atualizarPessoa(int $id, string $nome, string $cpf): Pessoa
     {
@@ -158,8 +157,8 @@ class PessoaService
     /**
      * Deleta uma pessoa pelo ID.
      *
-     * @param int $id O ID da pessoa a ser deletada.
-     * @throws EntityNotFoundException Se a pessoa não for encontrada.
+     * @param int $id
+     * @throws EntityNotFoundException 
      */
     public function deletarPessoa(int $id): void
     {
@@ -170,8 +169,8 @@ class PessoaService
     /**
      * Busca uma pessoa pelo CPF.
      *
-     * @param string $cpf O CPF da pessoa a ser buscada.
-     * @return Pessoa|null Retorna a pessoa encontrada ou null se não for encontrada.
+     * @param string $cpf 
+     * @return Pessoa|null
      */
     public function buscarPessoaPorCpf(string $cpf): ?Pessoa
     {
@@ -181,8 +180,8 @@ class PessoaService
     /**
      * Busca pessoas pelo nome.
      *
-     * @param string $nome O nome das pessoas a serem buscadas.
-     * @return Pessoa[] Retorna um array de pessoas com o nome correspondente.
+     * @param string $nome
+     * @return Pessoa[]
      */
     public function buscarPessoasPorNome(string $nome): array
     {
@@ -198,5 +197,58 @@ class PessoaService
     public function buscarPorCriterio(array $criterios): array
     {
         return $this->pessoaRepository->buscarPorCriterio($criterios);
+    }
+
+    /**
+     * Valida o CPF fornecido.
+     *
+     * @param string $cpf 
+     * @return bool 
+     */
+    public function validarCPF(string $cpf): bool
+    {
+        // Remove qualquer máscara de formatação (pontos e traços)
+        $cpf = preg_replace('/[^0-9]/', '', $cpf);
+
+        // Verifica se o CPF tem 11 dígitos
+        if (strlen($cpf) != 11) {
+            return false;
+        }
+
+        // Verifica se todos os dígitos são iguais
+        if (preg_match('/(\d)\1{10}/', $cpf)) {
+            return false;
+        }
+
+        // Cálculo do primeiro dígito verificador
+        for ($t = 9; $t < 11; $t++) {
+            $d = 0;
+            for ($c = 0; $c < $t; $c++) {
+                $d += $cpf[$c] * (($t + 1) - $c);
+            }
+            $d = ((10 * $d) % 11) % 10;
+            if ($cpf[$c] != $d) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Formata o CPF no padrão 'XXX.XXX.XXX-XX'.
+     *
+     * @param string $cpf 
+     * @return string
+     */
+    public function formatarCPF(string $cpf): string
+    {
+        $cpf = preg_replace('/[^0-9]/', '', $cpf);
+
+        if (strlen($cpf) == 11) {
+            return substr($cpf, 0, 3) . '.' . substr($cpf, 3, 3) . '.' . substr($cpf, 6, 3) . '-' . substr($cpf, 9, 2);
+        }
+
+        return $cpf;
     }
 }

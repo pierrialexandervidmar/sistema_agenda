@@ -5,6 +5,16 @@ namespace App\Repository;
 use App\Entity\Pessoa;
 use Doctrine\ORM\EntityManagerInterface;
 
+/**
+ * Classe PessoaRepository
+ *
+ * Responsável por gerenciar as operações de acesso a dados relacionadas à entidade Pessoa.
+ * Fornece métodos para salvar, buscar, atualizar e deletar pessoas no banco de dados.
+ *
+ * @package App\Repository
+ * @author Pierri Alexander Vidmar
+ * @since 10/2024
+ */
 class PessoaRepository
 {
     public EntityManagerInterface $entityManager;
@@ -26,7 +36,7 @@ class PessoaRepository
     /**
      * Busca todas as entidades Pessoa.
      *
-     * @return Pessoa[] Retorna um array de objetos Pessoa
+     * @return Pessoa[]
      */
     public function buscarTodos(): array
     {
@@ -35,8 +45,8 @@ class PessoaRepository
 
     /**
      * Busca uma entidade Pessoa pelo seu ID.
-     *
-     * @return Pessoa|null Retorna um objeto Pessoa ou null
+     *     
+     * @return Pessoa|null 
      */
     public function buscarPorId(int $id): ?Pessoa
     {
@@ -63,12 +73,12 @@ class PessoaRepository
     /**
      * Busca uma entidade Pessoa pelo seu CPF.
      *
-     * @return Pessoa|null Retorna um objeto Pessoa ou null
+     * @return Pessoa|null 
      */
     public function buscarPessoaCpf(string $cpf): ?Pessoa
     {
         $qb = $this->entityManager->createQueryBuilder();
-        
+
         return $qb->select('p')
             ->from(Pessoa::class, 'p')
             ->where('p.cpf = :cpf')
@@ -80,12 +90,12 @@ class PessoaRepository
     /**
      * Busca Pessoas pelo seu nome.
      *
-     * @return Pessoa[] Retorna um array de objetos Pessoa
+     * @return Pessoa[] 
      */
     public function buscarPessoaNome(string $nome): array
     {
         $qb = $this->entityManager->createQueryBuilder();
-        
+
         return $qb->select('p')
             ->from(Pessoa::class, 'p')
             ->where('p.nome LIKE :nome')
