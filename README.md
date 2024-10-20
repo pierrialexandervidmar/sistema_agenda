@@ -46,13 +46,13 @@ Nas demais pode executar apenas:
 docker compose up -d
 ```
 
-Para executar a criação do banco de dados a partir das entidades Doctrine, execute no terminal:
+### Criar o banco de dados a partir das entidades Doctrine:
+Após os containers estarem em execução, execute no terminal:
 
 ```bash
 sudo docker compose exec php-apache php cli-config.php orm:schema-tool:update --complete
 ```
-
-Esse comando irá iniciar os containers necessários, incluindo o servidor PHP, o banco de dados PostgreSQL e o PgAdmin.
+Esse comando vai criar o banco de dados a partir das entidades configuradas no Doctrine.
 
 ## Acesso ao Banco de Dados
 

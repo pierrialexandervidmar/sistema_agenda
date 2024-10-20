@@ -13,12 +13,12 @@ const Contatos = () => {
 
   const carregarContatos = () => {
     fetchContatos().then((response) => {
-      console.log(response.data);
       setContatos(response.data);
     });
   };
 
   const handleEdit = (contato) => {
+    console.log(contato);
     setContatoSelecionado(contato);
   };
 
