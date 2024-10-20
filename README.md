@@ -1,12 +1,13 @@
 # Projeto Agenda de Contatos (PHP + Doctrine)
 
-Este projeto consiste em uma API e views para o gerenciamento de uma agenda de contatos, desenvolvido com PHP, Doctrine e Docker. A aplicação permite realizar operações CRUD (Create, Read, Update, Delete) para gerenciar contatos, utilizando um banco de dados PostgreSQL.
+Este projeto consiste em uma `API` e `views` para o gerenciamento de uma agenda de contatos, desenvolvido com PHP, Doctrine e Docker. E adicionalmente foi incluida uma interface `frontend em ReactJS` que irá consumir as rotas da API.
+A aplicação permite realizar operações CRUD (Create, Read, Update, Delete) para gerenciar contatos, utilizando um banco de dados PostgreSQL.
 
-A estrutura da aplicação é baseada em uma arquitetura em camadas (Layered Architecture), composta por Controller, Service, Entity e Repository. Embora seja uma aplicação pequena, o objetivo é demonstrar uma forma eficaz de separação de responsabilidades, facilitando a manutenção futura e tornando-a escalável.
+A estrutura da aplicação é baseada em uma `arquitetura em camadas` (Layered Architecture), composta por Controller, Service, Entity e Repository. Embora seja uma aplicação pequena, o objetivo é demonstrar uma forma eficaz de separação de responsabilidades, facilitando a manutenção futura e tornando-a escalável.
 
-Outro aspecto importante é o arquivo Container.php, que gerencia as injeções de dependência, simplificando a manutenção e a organização do código.
+Outro aspecto importante é o arquivo Container.php, que gerencia as `injeções de dependência`, simplificando a manutenção e a organização do código.
 
-A aplicação inclui uma estrutura de views e rotas de APIs. Os recursos da API abrangem todas as operações CRUD e oferecem múltiplas maneiras de consumir dados (GET). O sistema de roteamento é isolado para views e APIs, o que facilita a manutenção e a inclusão de novos recursos no futuro, utilizando os arquivos routesAPI.php e routesWeb.php.
+A aplicação inclui uma estrutura de views e rotas de APIs. Os recursos da API abrangem todas as operações CRUD e oferecem múltiplas maneiras de consumir dados (GET). O `sistema de roteamento` é isolado para views e APIs, o que facilita a manutenção e a inclusão de novos recursos no futuro, utilizando os arquivos routesAPI.php e routesWeb.php.
 
 
 ## Tecnologias Utilizadas
@@ -33,8 +34,16 @@ git clone git@github.com:pierrialexandervidmar/sistema_agenda.git
 cd sistema_agenda
 ```
 
+Na primeira execução:
+
 ```bash
-docker-compose up
+docker compose up --build -d
+```
+
+Nas demais pode executar apenas:
+
+```bash
+docker compose up -d
 ```
 
 Para executar a criação do banco de dados a partir das entidades Doctrine, execute no terminal:
@@ -67,7 +76,7 @@ Crie um novo servidor no PgAdmin:
 - Password: Senha!123
 4. Clique em "Save".
 
-Após criar o servidor, você verá o banco de dados agenda na árvore de navegação do PgAdmin.
+Após criar o servidor, você verá o banco de dados `agenda` na árvore de navegação do PgAdmin.
 
 ## Acessos da Aplicação
 
@@ -95,6 +104,8 @@ http://localhost:8080/api
 
 ### Rotas da API
 A aplicação oferece várias rotas para gerenciar contatos e pessoas. As operações disponíveis seguem os princípios do CRUD (Create, Read, Update, Delete), com endpoints para criação, consulta, atualização e exclusão de registros. Abaixo estão os detalhes de cada rota.
+
+Obs.: Na raiz do projeto contém o arquivo `Insomnia_Requests.json`, pode importar ele no Insomnia e executar as requests para teste.
 
 ### Contatos
 

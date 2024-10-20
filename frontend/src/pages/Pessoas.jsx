@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import FormularioPessoa from '../components/Pessoa/formularioPessoa';
 import TabelaPessoa from '../components/Pessoa/tabelaPessoa';
-import { deletarPessoa, fetchPessoas } from '../services/api'; // Certifique-se que está importando corretamente
+import { deletarPessoa, fetchPessoas } from '../services/api';
 
 const Pessoas = () => {
   const [pessoas, setPessoas] = useState([]);
@@ -13,7 +13,7 @@ const Pessoas = () => {
 
   const carregarPessoas = () => {
     fetchPessoas().then((response) => {
-      console.log(response.data); // Verifique os dados recebidos
+      console.log(response.data);
       setPessoas(response.data);
     });
   };
@@ -29,8 +29,8 @@ const Pessoas = () => {
   };
 
   const handlePessoaSalva = () => {
-    setPessoaSelecionada(null); // Reseta o formulário
-    carregarPessoas(); // Atualiza a tabela com as novas pessoas
+    setPessoaSelecionada(null);
+    carregarPessoas();
   };
 
   return (

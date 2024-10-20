@@ -1,17 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { fetchContatos, deletarContato } from '../../services/api';
+import React from 'react';
+//import { fetchContatos, deletarContato } from '../../services/api';
 
-const TabelaContato = ({ onEdit }) => {
-  const [contatos, setContatos] = useState([]);
-
-  useEffect(() => {
-    fetchContatos().then((response) => setContatos(response.data));
-  }, []);
-
-  const handleDelete = (id) => {
-    deletarContato(id).then(() => setContatos(contatos.filter((c) => c.id !== id)));
-  };
-
+const TabelaContato = ({ contatos, onEdit, onDelete }) => {
   return (
     <div className="overflow-x-auto">
       <table className="min-w-full bg-white border border-gray-200">
@@ -23,7 +13,7 @@ const TabelaContato = ({ onEdit }) => {
             <th className="py-2 px-4 border-b">Ações</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody className="text-gray-600 text-sm font-light">
           {contatos.map((contato) => (
             <tr key={contato.id} className="hover:bg-gray-100">
               <td className="py-2 px-4 border-b">{contato.id}</td>
@@ -37,7 +27,7 @@ const TabelaContato = ({ onEdit }) => {
                   Editar
                 </button>
                 <button
-                  onClick={() => handleDelete(contato.id)}
+                  onClick={() => onDelete(contato.id)}
                   className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 transition duration-200"
                 >
                   Excluir

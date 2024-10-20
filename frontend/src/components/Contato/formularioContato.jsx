@@ -6,7 +6,11 @@ const FormularioContato = ({ contatoSelecionado, onContatoSalvo }) => {
   const [pessoas, setPessoas] = useState([]);
 
   useEffect(() => {
-    fetchPessoas().then((response) => setPessoas(response.data));
+    if (contatoSelecionado) {
+      setContato(contatoSelecionado);
+    } else {
+      fetchPessoas().then((response) => setPessoas(response.data));
+    }
   }, []);
 
   const handleChange = (e) => {
@@ -50,9 +54,9 @@ const FormularioContato = ({ contatoSelecionado, onContatoSalvo }) => {
         Contato:
       </label>
       <input
-        type="email"
-        name="email"
-        value={contato.email}
+        type="text"
+        name="descricao"
+        value={contato.descricao}
         onChange={handleChange}
         required
         className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
