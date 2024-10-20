@@ -27,15 +27,16 @@ const FormularioContato = ({ contatoSelecionado, onContatoSalvo }) => {
     e.preventDefault();
 
     const payload = {
-      tipo: contato.tipo,
+      tipo: Number(contato.tipo),
       descricao: contato.descricao,
-      idPessoa: contato.idPessoa
+      idPessoa: Number(contato.idPessoa)
     };
 
     if (contatoSelecionado) {
       atualizarContato(contatoSelecionado.id, payload).then(onContatoSalvo);
       setContato({ tipo: '', descricao: '', idPessoa: 0 });
     } else {
+      console.log(payload);
       salvarContato(payload).then(onContatoSalvo);
     }
   };
@@ -43,11 +44,11 @@ const FormularioContato = ({ contatoSelecionado, onContatoSalvo }) => {
   return (
     <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow-md">
       <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2 text-left" htmlFor="pessoaId">
+        <label className="block text-gray-700 text-sm font-bold mb-2 text-left" htmlFor="idPessoa">
           Nome:
         </label>
         <select
-          name="pessoaId"
+          name="idPessoa"
           value={contato.pessoaId}
           onChange={handleChange}
           required
