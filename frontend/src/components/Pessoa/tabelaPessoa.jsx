@@ -1,5 +1,4 @@
 import React from 'react';
-//import { fetchPessoas, deletarPessoa } from '../../services/api';
 
 const TabelaPessoa = ({ pessoas, onEdit, onDelete }) => {
   return (

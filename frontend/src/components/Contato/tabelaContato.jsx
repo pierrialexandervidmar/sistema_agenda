@@ -1,5 +1,4 @@
 import React from 'react';
-//import { fetchContatos, deletarContato } from '../../services/api';
 
 const TabelaContato = ({ contatos, onEdit, onDelete }) => {
   return (

@@ -195,8 +195,8 @@ use Doctrine\ORM\EntityNotFoundException;
     /**
      * Busca pessoas de acordo com critérios específicos enviados no array de parâmetro.
      *
-     * @param array $criterios Critérios de busca.
-     * @return Pessoa[] Retorna um array de pessoas que correspondem aos critérios.
+     * @param array $criterios
+     * @return Pessoa[]
      */
     public function buscarPorCriterio(array $criterios): array
     {

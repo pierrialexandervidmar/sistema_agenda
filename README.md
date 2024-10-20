@@ -12,13 +12,18 @@ A aplicação inclui uma estrutura de views e rotas de APIs. Os recursos da API 
 
 ## Tecnologias Utilizadas
 
-- PHP
+- PHP 8.3
 - Doctrine ORM
+- Apache
+- Composer
+- JQuery 3.7
 - Http-foundation
-- Docker
+- Docker & Docker Compose
 - PostgreSQL
 - PgAdmin
 - ReactJS
+- React Router Dom
+- Axios
 - Tailwind CSS
 
 ## Pré-requisitos

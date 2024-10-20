@@ -225,7 +225,7 @@ class PessoaController
     /**
      * Lista todas as pessoas com seus contatos.
      *
-     * @return Response Retorna uma resposta JSON com a lista de pessoas e seus contatos.
+     * @return Response
      */
     public function listar(): Response
     {
@@ -255,8 +255,8 @@ class PessoaController
     /**
      * Obtém uma pessoa pelo ID com seus contatos.
      *
-     * @param int $id O ID da pessoa a ser obtida.
-     * @return Response Retorna uma resposta JSON com os dados da pessoa ou um erro.
+     * @param int $id 
+     * @return Response
      */
     public function obterComContato(Request $request, int $id): Response
     {

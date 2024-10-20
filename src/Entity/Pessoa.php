@@ -20,7 +20,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Pessoa
 {
     /**
-     * @var int|null O identificador único da pessoa.
+     * @var int|null
      */
     #[ORM\Id]
     #[ORM\Column(type: 'integer')]
