@@ -48,8 +48,9 @@ class ContatoService
     public function criarContato(bool $tipo, string $descricao, int $idPessoa): Contato
     {
         $pessoa = $this->contatoRepository->buscarPessoaPorId($idPessoa);
-        
-        if (!$pessoa) {
+
+        if (!$pessoa)
+        {
             throw new EntityNotFoundException('Pessoa associada não encontrada.');
         }
 
@@ -89,7 +90,8 @@ class ContatoService
     {
         $contato = $this->contatoRepository->buscarPorId($id);
 
-        if (!$contato) {
+        if (!$contato)
+        {
             throw new EntityNotFoundException('Contato não encontrado.');
         }
 
@@ -103,7 +105,7 @@ class ContatoService
      *
      * @return Pessoa[] 
      */
-    public function buscarPessoas(): array|Pessoa|null     
+    public function buscarPessoas(): array|Pessoa|null
     {
         return $this->contatoRepository->buscarPessoas();
     }
@@ -126,7 +128,8 @@ class ContatoService
         $contato = $this->obterContatoPorId($id);
         $pessoa = $this->contatoRepository->buscarPessoaPorId($idPessoa);
 
-        if (!$pessoa) {
+        if (!$pessoa)
+        {
             throw new EntityNotFoundException('Pessoa associada não encontrada.');
         }
 

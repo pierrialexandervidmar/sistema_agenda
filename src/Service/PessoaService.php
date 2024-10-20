@@ -16,7 +16,7 @@ use Doctrine\ORM\EntityNotFoundException;
  * @package App\Service
  * @author Pierri Alexander Vidmar
  * @since 10/2024
- */class PessoaService
+ */ class PessoaService
 {
     private PessoaRepository $pessoaRepository;
     private ContatoRepository $contatoRepository;
@@ -72,13 +72,15 @@ use Doctrine\ORM\EntityNotFoundException;
     {
         $pessoa = $this->pessoaRepository->buscarPorId($id);
 
-        if (!$pessoa) {
+        if (!$pessoa)
+        {
             throw new EntityNotFoundException('Pessoa não encontrada.');
         }
 
         $contatos = $this->contatoRepository->buscarContatoPessoa(['pessoa' => $pessoa->getId()]);
 
-        $contatosMapeados = array_map(function ($contato) {
+        $contatosMapeados = array_map(function ($contato)
+        {
             return [
                 'tipo' => $contato->getTipo() ? "Email" : "Telefone",
                 'descricao' => $contato->getDescricao(),
@@ -104,7 +106,8 @@ use Doctrine\ORM\EntityNotFoundException;
     {
         $pessoa = $this->pessoaRepository->buscarPorId($id);
 
-        if (!$pessoa) {
+        if (!$pessoa)
+        {
             throw new EntityNotFoundException('Pessoa não encontrada.');
         }
 
@@ -121,7 +124,8 @@ use Doctrine\ORM\EntityNotFoundException;
         $pessoas = $this->pessoaRepository->buscarTodos();
         $resultado = [];
 
-        foreach ($pessoas as $pessoa) {
+        foreach ($pessoas as $pessoa)
+        {
             $contatos = $this->contatoRepository->buscarContatoPessoa(['pessoa' => $pessoa->getId()]);
             $resultado[] = [
                 'id' => $pessoa->getId(),
@@ -211,23 +215,28 @@ use Doctrine\ORM\EntityNotFoundException;
         $cpf = preg_replace('/[^0-9]/', '', $cpf);
 
         // Verifica se o CPF tem 11 dígitos
-        if (strlen($cpf) != 11) {
+        if (strlen($cpf) != 11)
+        {
             return false;
         }
 
         // Verifica se todos os dígitos são iguais
-        if (preg_match('/(\d)\1{10}/', $cpf)) {
+        if (preg_match('/(\d)\1{10}/', $cpf))
+        {
             return false;
         }
 
         // Cálculo do primeiro dígito verificador
-        for ($t = 9; $t < 11; $t++) {
+        for ($t = 9; $t < 11; $t++)
+        {
             $d = 0;
-            for ($c = 0; $c < $t; $c++) {
+            for ($c = 0; $c < $t; $c++)
+            {
                 $d += $cpf[$c] * (($t + 1) - $c);
             }
             $d = ((10 * $d) % 11) % 10;
-            if ($cpf[$c] != $d) {
+            if ($cpf[$c] != $d)
+            {
                 return false;
             }
         }
@@ -245,7 +254,8 @@ use Doctrine\ORM\EntityNotFoundException;
     {
         $cpf = preg_replace('/[^0-9]/', '', $cpf);
 
-        if (strlen($cpf) == 11) {
+        if (strlen($cpf) == 11)
+        {
             return substr($cpf, 0, 3) . '.' . substr($cpf, 3, 3) . '.' . substr($cpf, 6, 3) . '-' . substr($cpf, 9, 2);
         }
 

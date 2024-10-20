@@ -35,6 +35,12 @@ cd sistema_agenda
 docker-compose up
 ```
 
+Para executar a criação do banco de dados a partir das entidades Doctrine, execute no terminal:
+
+```bash
+sudo docker compose exec php-apache php cli-config.php orm:schema-tool:update --complete
+```
+
 Esse comando irá iniciar os containers necessários, incluindo o servidor PHP, o banco de dados PostgreSQL e o PgAdmin.
 
 ## Acesso ao Banco de Dados
@@ -60,3 +66,19 @@ Crie um novo servidor no PgAdmin:
 4. Clique em "Save".
 
 Após criar o servidor, você verá o banco de dados agenda na árvore de navegação do PgAdmin.
+
+## Acessos da Aplicação
+
+### A aplicação possui duas interfaces
+
+A View renderizada pelo servidor PHP:
+
+```bash
+http://localhost:8080/
+```
+
+E o Frontend ReactJS consumindo a API:
+
+```bash
+http://localhost:5173/
+```

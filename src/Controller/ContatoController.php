@@ -278,7 +278,7 @@ class ContatoController
      * @param int $id 
      * @return Response
      */
-    public function obter(int $id): Response
+    public function obter(Request $request, int $id): Response
     {
         try
         {
@@ -349,7 +349,13 @@ class ContatoController
         try
         {
             $this->contatoService->atualizarContato($id, (bool)$dados['tipo'], $dados['descricao'], (int)$dados['idPessoa']);
-            return new JsonResponse(['id' => $id], Response::HTTP_OK);
+            $contatoAtualizado = $this->contatoService->obterContatoPorId($id);
+            return new JsonResponse([
+                'id' => $contatoAtualizado->getId(),
+                'tipo' => $contatoAtualizado->getTipo() ? 'Email' : 'Telefone',
+                'descricao' => $contatoAtualizado->getDescricao(),
+                'idPessoa' => $contatoAtualizado->getPessoa()->getId(),
+            ], Response::HTTP_OK);
         }
         catch (EntityNotFoundException $e)
         {
@@ -367,7 +373,7 @@ class ContatoController
      * @param int $id 
      * @return Response 
      */
-    public function deletar(int $id): Response
+    public function deletar(Request $request, int $id): Response
     {
         try
         {
