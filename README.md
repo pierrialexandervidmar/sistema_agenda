@@ -224,3 +224,6 @@ Obs.: Na raiz do projeto contém o arquivo `Insomnia_Requests.json`, pode import
    - **Método HTTP**: `DELETE`
    - **Controller**: `PessoaController::deletar`
    - **Descrição**: Remove uma pessoa do sistema com base no ID fornecido.
+
+
+![sistema_agenda](https://github.com/pierrialexandervidmar/sistema_agenda/blob/main/frontend/public/frontend-react.png)
