@@ -61,8 +61,8 @@ Crie um novo servidor no PgAdmin:
 3. Na aba "Connection", use as seguintes informações:
 4. Host: postgres
 5. Port: 5432
-  -- Username: root
-  -- Password: Senha!123
+- Username: root
+- Password: Senha!123
 4. Clique em "Save".
 
 Após criar o servidor, você verá o banco de dados agenda na árvore de navegação do PgAdmin.
@@ -82,3 +82,95 @@ E o Frontend ReactJS consumindo a API:
 ```bash
 http://localhost:5173/
 ```
+
+## Acesso a API
+
+URL Base da API:
+
+```bash
+http://localhost:8080/api
+```
+
+### Rotas da API
+A aplicação oferece várias rotas para gerenciar contatos e pessoas. As operações disponíveis seguem os princípios do CRUD (Create, Read, Update, Delete), com endpoints para criação, consulta, atualização e exclusão de registros. Abaixo estão os detalhes de cada rota.
+
+### Contatos
+
+1. **Criar Contato**
+   - **Endpoint**: `/api/contatos`
+   - **Método HTTP**: `POST`
+   - **Controller**: `ContatoController::criar`
+   - **Descrição**: Cria um novo contato.
+
+2. **Listar Contatos**
+   - **Endpoint**: `/api/contatos`
+   - **Método HTTP**: `GET`
+   - **Descrição**: Retorna uma lista de todos os contatos cadastrados.
+
+3. **Listar Contatos com Pessoas**
+   - **Endpoint**: `/api/contatos/pessoas`
+   - **Método HTTP**: `GET`
+   - **Controller**: `ContatoController::listarComPessoa`
+   - **Descrição**: Retorna uma lista de contatos com suas respectivas pessoas relacionadas.
+
+4. **Obter Contato por ID**
+   - **Endpoint**: `/api/contatos/{id}`
+   - **Método HTTP**: `GET`
+   - **Controller**: `ContatoController::obter`
+   - **Descrição**: Retorna um contato específico com base no ID fornecido.
+
+5. **Obter Contato com Pessoa por ID**
+   - **Endpoint**: `/api/contatos/pessoas/{id}`
+   - **Método HTTP**: `GET`
+   - **Controller**: `ContatoController::obterComPessoa`
+   - **Descrição**: Retorna um contato e sua respectiva pessoa com base no ID fornecido.
+
+6. **Atualizar Contato**
+   - **Endpoint**: `/api/contatos/{id}`
+   - **Método HTTP**: `PUT`
+   - **Controller**: `ContatoController::atualizar`
+   - **Descrição**: Atualiza as informações de um contato específico.
+
+7. **Deletar Contato**
+   - **Endpoint**: `/api/contatos/{id}`
+   - **Método HTTP**: `DELETE`
+   - **Controller**: `ContatoController::deletar`
+   - **Descrição**: Remove um contato do sistema com base no ID fornecido.
+
+### Pessoas
+
+1. **Criar Pessoa**
+   - **Endpoint**: `/api/pessoas`
+   - **Método HTTP**: `POST`
+   - **Controller**: `PessoaController::criar`
+   - **Descrição**: Cria uma nova pessoa.
+
+2. **Listar Pessoas**
+   - **Endpoint**: `/api/pessoas`
+   - **Método HTTP**: `GET`
+   - **Controller**: `PessoaController::listar`
+   - **Descrição**: Retorna uma lista de todas as pessoas cadastradas.
+
+3. **Obter Pessoa por ID**
+   - **Endpoint**: `/api/pessoas/{id}`
+   - **Método HTTP**: `GET`
+   - **Controller**: `PessoaController::obter`
+   - **Descrição**: Retorna uma pessoa específica com base no ID fornecido.
+
+4. **Obter Pessoa com Contatos por ID**
+   - **Endpoint**: `/api/pessoas/contatos/{id}`
+   - **Método HTTP**: `GET`
+   - **Controller**: `PessoaController::obterComContato`
+   - **Descrição**: Retorna uma pessoa e seus contatos associados com base no ID fornecido.
+
+5. **Atualizar Pessoa**
+   - **Endpoint**: `/api/pessoas/{id}`
+   - **Método HTTP**: `PUT`
+   - **Controller**: `PessoaController::atualizar`
+   - **Descrição**: Atualiza as informações de uma pessoa específica.
+
+6. **Deletar Pessoa**
+   - **Endpoint**: `/api/pessoas/{id}`
+   - **Método HTTP**: `DELETE`
+   - **Controller**: `PessoaController::deletar`
+   - **Descrição**: Remove uma pessoa do sistema com base no ID fornecido.
