@@ -17,6 +17,8 @@ A aplicação inclui uma estrutura de views e rotas de APIs. Os recursos da API 
 - Docker
 - PostgreSQL
 - PgAdmin
+- ReactJS
+- Tailwind CSS
 
 ## Pré-requisitos
 
@@ -101,6 +103,15 @@ A aplicação oferece várias rotas para gerenciar contatos e pessoas. As opera�
    - **Método HTTP**: `POST`
    - **Controller**: `ContatoController::criar`
    - **Descrição**: Cria um novo contato.
+   - **Payload**:
+   ```json
+   {
+      "tipo": 0,
+      "descricao": "4899995555",
+      "idPessoa": 14
+   }
+   // Tipo 0 para telefone e tipo 1 para email.
+   ```
 
 2. **Listar Contatos**
    - **Endpoint**: `/api/contatos`
@@ -130,6 +141,15 @@ A aplicação oferece várias rotas para gerenciar contatos e pessoas. As opera�
    - **Método HTTP**: `PUT`
    - **Controller**: `ContatoController::atualizar`
    - **Descrição**: Atualiza as informações de um contato específico.
+   - **Payload**:
+   ```json
+   {
+		"tipo": 0,
+		"descricao": "4796969622",
+		"idPessoa": 9
+   }
+   // Tipo 0 para telefone e tipo 1 para email.
+   ```
 
 7. **Deletar Contato**
    - **Endpoint**: `/api/contatos/{id}`
@@ -144,6 +164,13 @@ A aplicação oferece várias rotas para gerenciar contatos e pessoas. As opera�
    - **Método HTTP**: `POST`
    - **Controller**: `PessoaController::criar`
    - **Descrição**: Cria uma nova pessoa.
+   - **Payload**:
+   ```json
+   {
+      "nome": "Maristela Santos",
+      "cpf": "83736329059"
+   }
+   ```
 
 2. **Listar Pessoas**
    - **Endpoint**: `/api/pessoas`
@@ -168,6 +195,13 @@ A aplicação oferece várias rotas para gerenciar contatos e pessoas. As opera�
    - **Método HTTP**: `PUT`
    - **Controller**: `PessoaController::atualizar`
    - **Descrição**: Atualiza as informações de uma pessoa específica.
+   - **Payload**:
+   ```json
+   {
+      "nome": "Maristela Santos",
+      "cpf": "83736329059"
+   }
+   ```
 
 6. **Deletar Pessoa**
    - **Endpoint**: `/api/pessoas/{id}`
