@@ -56,11 +56,12 @@ Após os containers estarem em execução, execute no terminal:
 
 ```bash
 sudo docker compose exec php-apache php cli-config.php orm:schema-tool:update --complete
-
-ou caso necessário
-
+```
+Se ocorrer algum bloqueio, execute este:
+```bash
 sudo docker compose exec php-apache php cli-config.php orm:schema-tool:update --force --complete
 ```
+
 Esse comando vai criar o banco de dados a partir das entidades configuradas no Doctrine.
 
 ## Acesso ao Banco de Dados
